@@ -7,7 +7,7 @@ import { useGLTF } from '@react-three/drei/core/useGLTF'
 
 export default function Model(props) {
   const group = useRef()
-  const { nodes, materials } = useGLTF('/assets/StrijpS_Gebouw_01_BlokErOnder.glb')
+  const { nodes, materials } = useGLTF('/assets/compressed-block.glb')
   return (
     <group ref={group} {...props} dispose={null}>
       <mesh
@@ -23,4 +23,4 @@ export default function Model(props) {
   )
 }
 
-useGLTF.preload('/assets/StrijpS_Gebouw_01_BlokErOnder.glb')
+useGLTF.preload('/assets/compressed-block.glb')

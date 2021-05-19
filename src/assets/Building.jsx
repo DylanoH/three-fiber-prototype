@@ -10,7 +10,7 @@ import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
 export default function Model(props) {
   const group = useRef()
   const { nodes, materials } = useGLTF(
-    '/assets/StrijpS_Gebouw_02.glb'
+    '/assets/compressed-building.glb'
   ) 
   return (
     <group ref={group} {...props} dispose={null}>
@@ -27,4 +27,4 @@ export default function Model(props) {
   )
 }
 
-useGLTF.preload('/assets/StrijpS_Gebouw_02.glb')
+useGLTF.preload('/assets/compressed-building.glb')

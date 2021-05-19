@@ -9,7 +9,7 @@ import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
 
 export default function Model(props) {
   const group = useRef(null)
-  const { nodes, materials } = useGLTF('/assets/Dylano.glb')
+  const { nodes, materials } = useGLTF('/assets/compressed-dylano.glb')
   return (
     <group ref={group} {...props} dispose={null}>
       <mesh
@@ -24,4 +24,4 @@ export default function Model(props) {
   )
 }
 
-useGLTF.preload('/assets/Dylano.glb')
+useGLTF.preload('/assets/compressed-dylano.glb')

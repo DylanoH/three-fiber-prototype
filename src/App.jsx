@@ -102,3 +102,4 @@ const App = () => {
 export default App
 
 // https://gltf.pmnd.rs/
+// npx gltf-pipeline -i Groundplane.glb -o compressed-groundplane.glb -d
