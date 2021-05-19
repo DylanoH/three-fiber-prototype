@@ -83,7 +83,7 @@ const App = () => {
           <HaasjeOver onClick={(e) => displayData(e.object)} />
           <Ground />
           <Dylano onClick={(e) => displayData(e.object)} />
-          {/* <Block /> */}
+          <Block />
           <Building onClick={(e) => displayData(e.object)} />
           <Marker />
           <Auto />
