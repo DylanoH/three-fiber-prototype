@@ -45,12 +45,12 @@ const CameraController = () => {
 
 const App = () => {
 
-  const displayData = (object: any) => {
+  const displayData = (object) => {
     const { userData } = object;
 
     console.log(object);
-    const text = document.querySelector('.container') as HTMLElement
-    const sidebar = document.querySelector('.sidebar') as HTMLElement
+    const text = document.querySelector('.container')
+    const sidebar = document.querySelector('.sidebar')
 
     if (userData === {}) {
       text.style.visibility = 'hidden'

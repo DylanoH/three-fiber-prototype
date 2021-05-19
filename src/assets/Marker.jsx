@@ -7,18 +7,9 @@ import React, { useRef } from 'react'
 import { useGLTF } from '@react-three/drei/core/useGLTF'
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
 
-type GLTFResult = GLTF & {
-  nodes: {
-    Marker: THREE.Mesh
-  }
-  materials: {
-    M_Marker: THREE.MeshStandardMaterial
-  }
-}
-
-export default function Model(props: JSX.IntrinsicElements['group']) {
-  const group = useRef<THREE.Group>()
-  const { nodes, materials } = useGLTF('/assets/Marker.glb') as GLTFResult
+export default function Model(props) {
+  const group = useRef(null)
+  const { nodes, materials } = useGLTF('/assets/Marker.glb')
   return (
     <group ref={group} {...props} dispose={null}>
       <mesh

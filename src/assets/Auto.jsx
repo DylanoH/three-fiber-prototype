@@ -8,31 +8,14 @@ import { useGLTF } from '@react-three/drei/core/useGLTF'
 import { useAnimations } from '@react-three/drei/core/useAnimations'
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
 import { useLoader, useFrame } from 'react-three-fiber'
-type GLTFResult = GLTF & {
-  nodes: {
-    Box005: THREE.Mesh
-  }
-  materials: {
-    M_Auto: THREE.MeshStandardMaterial
-  }
-}
 
-type ActionName = 'All Animations'
-
-type GLTFActions = Record<ActionName, THREE.AnimationAction>
-
-type AnimationControllerProps = {
-  ybotRef: React.MutableRefObject<THREE.Group | undefined | null>
-  animations: THREE.AnimationClip[]
-}
-
-export default function Model(props: JSX.IntrinsicElements['group']) {
-  const group = useRef<THREE.Group>()
+export default function Model(props) {
+  const group = useRef(null)
   const { nodes, materials, animations } = useGLTF(
     '/assets/auto.glb'
-  ) as GLTFResult
+  ) 
 
-  function AnimationController(props: AnimationControllerProps) {
+  function AnimationController(props) {
     const { actions } = useAnimations(props.animations, props.ybotRef)
     // const { actions } = useAnimations<GLTFActions>(animations, group)
 
