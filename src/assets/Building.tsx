@@ -30,7 +30,7 @@ export default function Model(props: JSX.IntrinsicElements['group']) {
         material={materials.M_Building2}
         position={[144.373352, 0, -55.8524]}
         rotation={[Math.PI, -0.69813182, Math.PI]}
-        userData={{ name: 'StrijpS_Gebouw_02' }}
+        userData={{ name: 'Parkeer garage', body: 'Over dit gebouw...' }}
       />
     </group>
   )

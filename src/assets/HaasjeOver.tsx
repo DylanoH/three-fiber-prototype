@@ -28,7 +28,7 @@ export default function Model(props: JSX.IntrinsicElements['group']) {
       <group
         position={[-114.292229, 0, -72.47771]}
         rotation={[0, -0.4974189, 0]}
-        userData={{ name: 'StrijpS_Gebouw_01' }}
+        userData={{ name: 'StrijpS_Gebouw_01', body: 'haasje over text' }}
       >
         <mesh
           castShadow

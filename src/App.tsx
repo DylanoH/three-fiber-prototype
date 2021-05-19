@@ -44,29 +44,58 @@ const CameraController = () => {
 }
 
 const App = () => {
+
+  const displayData = (object: any) => {
+    const { userData } = object;
+
+    console.log(object);
+    const text = document.querySelector('.container') as HTMLElement
+    const sidebar = document.querySelector('.sidebar') as HTMLElement
+
+    if (userData === {}) {
+      text.style.visibility = 'hidden'
+      text.style.opacity = '0'
+      sidebar.style.left = '-390px'
+    } else {
+      text.style.visibility = 'visible'
+      text.style.opacity = '1'
+      sidebar.style.left = '0'
+      text.innerHTML = userData.name
+      sidebar.innerHTML = userData.body
+    }
+  }
+
   return (
-    <Canvas>
-      <CameraController />
-      <ambientLight />
-      <hemisphereLight color={0xffffff} intensity={0.4} />
-      <directionalLight
-        color={0xffffff}
-        intensity={0.7}
-        position={new Vector3(250, 400, 100)}
-        castShadow
-      />
-      <pointLight position={[10, 10, 10]} />
-      <Suspense fallback={<Loader />}>
-        <HaasjeOver />
-        <Ground />
-        <Dylano />
-        <Block />
-        <Building />
-        <Marker />
-        <Auto />
-      </Suspense>
-      <Box />
-    </Canvas>
+    <>
+
+      <Canvas>
+        <CameraController />
+        <ambientLight />
+        <hemisphereLight color={0xffffff} intensity={0.4} />
+        <directionalLight
+          color={0xffffff}
+          intensity={0.7}
+          position={new Vector3(250, 400, 100)}
+          castShadow
+        />
+        <pointLight position={[10, 10, 10]} />
+        <Suspense fallback={<Loader />}>
+          <HaasjeOver onClick={(e) => displayData(e.object)} />
+          <Ground />
+          <Dylano onClick={(e) => displayData(e.object)} />
+          {/* <Block /> */}
+          <Building onClick={(e) => displayData(e.object)} />
+          <Marker />
+          <Auto />
+        </Suspense>
+        <Box />
+      </Canvas>
+      <div className="sidebar">
+      </div>
+      <div className="container">
+        <span className='title'>Test threejs</span>
+      </div>
+    </>
   )
 }
 

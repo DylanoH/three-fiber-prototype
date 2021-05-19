@@ -25,6 +25,7 @@ export default function Model(props: JSX.IntrinsicElements['group']) {
         castShadow
         receiveShadow
         geometry={nodes.Marker.geometry}
+        position={[-100, 100, -100]}
         material={materials.M_Marker}
         rotation={[Math.PI / 2, 0, 0]}
         userData={{ name: 'Marker' }}

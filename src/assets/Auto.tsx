@@ -38,13 +38,12 @@ export default function Model(props: JSX.IntrinsicElements['group']) {
 
     console.log(actions)
 
-    // React.useEffect(() => {
-    //   actions. ?.reset().play()
-    //   return () => void actions?.fadeOut(1)
-    // }, [actions, blendDuration])
+
+
 
     return null
   }
+
 
   return (
     <>

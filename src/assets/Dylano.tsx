@@ -27,7 +27,7 @@ export default function Model(props: JSX.IntrinsicElements['group']) {
         geometry={nodes.Dylano.geometry}
         material={materials['Material #282']}
         position={[105.1739, 0, -183.56001]}
-        userData={{ name: 'Dylano' }}
+        userData={{ name: 'Dylano', body: 'Dylano doos' }}
       />
     </group>
   )
