@@ -27,10 +27,10 @@ export default function Model(props) {
 
   useFrame((state) => {
     if(props.test){
-    const step = 0.1
-    state.camera.position.lerp(vec.set(25, 1,  0), step)
-    state.camera.lookAt(-114.292229 , 0 , -72.47771)
-    state.camera.updateProjectionMatrix()
+    // const step = 0.1
+    // state.camera.position.lerp(vec.set(25, 1,  0), step)
+    // state.camera.lookAt(-114.292229 , 0 , -72.47771)
+    // state.camera.updateProjectionMatrix()
     }
     else {
       

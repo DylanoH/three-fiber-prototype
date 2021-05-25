@@ -22,54 +22,18 @@ import Auto from './assets/Auto'
 import Building from './assets/Building'
 import Marker from './assets/Marker'
 
-import { Controls, PlayState, Timeline, Tween } from 'react-gsap';
 import { PerspectiveCamera } from '@react-three/drei/core/PerspectiveCamera'
 
-// Extend will make OrbitControls available as a JSX element called orbitControls for us to use.
-// extend({ OrbitControls })
-// useFrame((state) => {
-//   // console.log(props.test);
-//   if(zoom) {
-//   const step = 0.1
-//   // state.camera.fov = THREE.MathUtils.lerp(state.camera.fov, zoom ? 10 : 42, step)
-//   state.camera.position.lerp(vec.set(zoom ? 25 : 40, zoom ? 1 : 15, zoom ? 0 : 60), step)
-//   state.camera.lookAt(-114.292229, 0, -72.47771);    
-//   state.camera.updateProjectionMatrix()
-//   }
-// })
-// const CameraController = (props) => {
-//   const { camera, gl } = useThree()
-//   console.log('test', props.test);
-  
-//   camera.position.set( 250, 200,250)
-//   camera.lookAt(0,0,0)
-
-//   useEffect(() => {
-//     if(!props.test) {
-//     const controls = new OrbitControls(camera, gl.domElement)
-//     controls.maxPolarAngle = Math.PI / 2.5
-//     controls.enableZoom = true
-//     controls.enablePan = true
-//     controls.autoRotateSpeed = 0.5
-//     controls.autoRotate = true
-
-
-//     return () => {
-//       controls.dispose()
-//     }
-//   }
-//   }, [camera, gl, props.test])
-//   return null
-// }
+import { gsap } from 'gsap'
 
 const App = () => {
-
   const [test, setTest] = useState(false)
+  const [out, setOut] = useState(false)
 
   const displayData = (object) => {
-    const { userData } = object;
+    const { userData } = object
 
-    console.log(object);
+    console.log(object)
     const text = document.querySelector('.container')
     const sidebar = document.querySelector('.sidebar')
 
@@ -86,17 +50,86 @@ const App = () => {
     }
   }
 
-  const myCamera = useRef()
+  const myCamera = useRef(null)
+  const myControls = useRef(null)
+
+  useEffect(() => {
+    if (myCamera.current !== null) {
+      animations()
+    }
+  }, [test, out])
+
+  useEffect(() => {
+    setOut(false)
+  }, [test])
+  useEffect(() => {
+    setTest(false)
+  }, [out])
+
+  const animations = () => {
+    if (test) {
+      // focus anims
+      gsap.to(myCamera.current.position, {
+        duration: 0.5,
+        x: 20,
+        y: 20,
+        z: 20,
+        onUpdate: () => {
+          myCamera.current.updateProjectionMatrix()
+        },
+      })
+      gsap.to(myControls.current.target, {
+        duration: 0.5,
+        x: -114.292229,
+        y: 0,
+        z: -72.47771,
+        onUpdate: function () {
+          myControls.current.update()
+        },
+      })
+    }
+    if (out) {
+      // back anims
+      gsap.to(myCamera.current.position, {
+        duration: 0.5,
+        x: 250,
+        y: 200,
+        z: 250,
+        onUpdate: () => {
+          myCamera.current.updateProjectionMatrix()
+        },
+      })
+      gsap.to(myControls.current.target, {
+        duration: 0.5,
+        x: 0,
+        y: 0,
+        z: 0,
+        onUpdate: function () {
+          myControls.current.update()
+        },
+      })
+    }
+  }
+
   return (
     <>
-
       <Canvas>
-         {/* {!test && <CameraController  test={test}/>} */}
-         {/* { !test && <OrbitControls ref={testRef} enableZoom autoRotate autoRotateSpeed={0.5}/>} */}
+        {/* {!test && <CameraController  test={test}/>} */}
+        {/* { !test && <OrbitControls ref={testRef} enableZoom autoRotate autoRotateSpeed={0.5}/>} */}
 
-         {/* <Timeline target={testRef}></Timeline> */}
-         <PerspectiveCamera ref={myCamera} makeDefault position={[250, 200, 250]}/>
-         <OrbitControls camera={myCamera.current}/>
+        {/* <Timeline target={testRef}></Timeline> */}
+        <PerspectiveCamera
+          ref={myCamera}
+          makeDefault
+          position={[250, 200, 250]}
+        />
+        <OrbitControls
+          ref={myControls}
+          camera={myCamera.current}
+          autoRotate={!test}
+          autoRotateSpeed={0.5}
+          enabled={!test}
+        />
         <ambientLight />
         <hemisphereLight color={0xffffff} intensity={0.4} />
         <directionalLight
@@ -109,7 +142,7 @@ const App = () => {
         <Suspense fallback={<Loader />}>
           <HaasjeOver setTest={setTest} test={test} />
           <Ground />
-          <Dylano setTest={setTest} test={test}/>
+          <Dylano setTest={setTest} test={test} />
           <Block />
           <Building onClick={(e) => displayData(e.object)} />
           <Marker />
@@ -117,11 +150,21 @@ const App = () => {
         </Suspense>
         <Box />
       </Canvas>
-      <div className="sidebar">
-      </div>
-      <div className="container">
+      <div className='sidebar'></div>
+      <div className='container'>
         <span className='title'>Test threejs</span>
       </div>
+      <div
+        style={{
+          width: 200,
+          height: 80,
+          backgroundColor: 'green',
+          position: 'fixed',
+          bottom: 20,
+          left: 20,
+        }}
+        onClick={() => setOut(true)}
+      ></div>
     </>
   )
 }
