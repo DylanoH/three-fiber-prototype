@@ -9,7 +9,9 @@ import {
   useThree,
 } from '@react-three/fiber'
 import Box from './Box'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { OrbitControls } from '@react-three/drei/core/OrbitControls'
+
+// import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import Loader from './Loader'
 import HaasjeOver from './assets/HaasjeOver'
 import { Vector3 } from 'three'
@@ -20,30 +22,49 @@ import Auto from './assets/Auto'
 import Building from './assets/Building'
 import Marker from './assets/Marker'
 
+import { Controls, PlayState, Timeline, Tween } from 'react-gsap';
+import { PerspectiveCamera } from '@react-three/drei/core/PerspectiveCamera'
+
 // Extend will make OrbitControls available as a JSX element called orbitControls for us to use.
-extend({ OrbitControls })
+// extend({ OrbitControls })
+// useFrame((state) => {
+//   // console.log(props.test);
+//   if(zoom) {
+//   const step = 0.1
+//   // state.camera.fov = THREE.MathUtils.lerp(state.camera.fov, zoom ? 10 : 42, step)
+//   state.camera.position.lerp(vec.set(zoom ? 25 : 40, zoom ? 1 : 15, zoom ? 0 : 60), step)
+//   state.camera.lookAt(-114.292229, 0, -72.47771);    
+//   state.camera.updateProjectionMatrix()
+//   }
+// })
+// const CameraController = (props) => {
+//   const { camera, gl } = useThree()
+//   console.log('test', props.test);
+  
+//   camera.position.set( 250, 200,250)
+//   camera.lookAt(0,0,0)
 
-const CameraController = () => {
-  const { camera, gl } = useThree()
-  useEffect(() => {
-    const controls = new OrbitControls(camera, gl.domElement)
+//   useEffect(() => {
+//     if(!props.test) {
+//     const controls = new OrbitControls(camera, gl.domElement)
+//     controls.maxPolarAngle = Math.PI / 2.5
+//     controls.enableZoom = true
+//     controls.enablePan = true
+//     controls.autoRotateSpeed = 0.5
+//     controls.autoRotate = true
 
-    controls.maxPolarAngle = Math.PI / 2.5
-    controls.enableZoom = true
-    controls.enablePan = true
-    controls.autoRotateSpeed = 0.5
-    controls.autoRotate = true
-    camera.position.set(250, 200, 250)
-    camera.lookAt(0, 0, 0)
 
-    return () => {
-      controls.dispose()
-    }
-  }, [camera, gl])
-  return null
-}
+//     return () => {
+//       controls.dispose()
+//     }
+//   }
+//   }, [camera, gl, props.test])
+//   return null
+// }
 
 const App = () => {
+
+  const [test, setTest] = useState(false)
 
   const displayData = (object) => {
     const { userData } = object;
@@ -65,11 +86,17 @@ const App = () => {
     }
   }
 
+  const myCamera = useRef()
   return (
     <>
 
       <Canvas>
-        <CameraController />
+         {/* {!test && <CameraController  test={test}/>} */}
+         {/* { !test && <OrbitControls ref={testRef} enableZoom autoRotate autoRotateSpeed={0.5}/>} */}
+
+         {/* <Timeline target={testRef}></Timeline> */}
+         <PerspectiveCamera ref={myCamera} makeDefault position={[250, 200, 250]}/>
+         <OrbitControls camera={myCamera.current}/>
         <ambientLight />
         <hemisphereLight color={0xffffff} intensity={0.4} />
         <directionalLight
@@ -80,9 +107,9 @@ const App = () => {
         />
         <pointLight position={[10, 10, 10]} />
         <Suspense fallback={<Loader />}>
-          <HaasjeOver onClick={(e) => displayData(e.object)} />
+          <HaasjeOver setTest={setTest} test={test} />
           <Ground />
-          <Dylano onClick={(e) => displayData(e.object)} />
+          <Dylano setTest={setTest} test={test}/>
           <Block />
           <Building onClick={(e) => displayData(e.object)} />
           <Marker />

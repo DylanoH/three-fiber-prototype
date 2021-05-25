@@ -15,7 +15,7 @@ canvas {
   width: 100vw;
   z-index: 3;
   height: 100vh;
-  background: Radial-gradient(#383e42, black);
+  background-color: #8dd1e9;
 }
 
 .container {
