@@ -9,26 +9,23 @@ import { useGLTF } from '@react-three/drei/core/useGLTF'
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
 
 export default function Model(props) {
-
   const [active, setActive] = useState(false)
+  const [position, setPosition] = useState(false)
 
   useEffect(() => {
-    document.body.style.cursor = active ? 'pointer' : 'auto'},
-    [active])
+    document.body.style.cursor = active ? 'pointer' : 'auto'
+  }, [active])
 
-
-  const { nodes, materials } = useGLTF(
-    '/assets/compressed-building.glb'
-  ) 
+  const { nodes, materials } = useGLTF('/assets/compressed-building.glb')
 
   const group = useRef()
-  // console.log(group);
 
-  // let position;
-  // if(group.current !== null) position = group.current.position;
+  useEffect(() => {
+    if (group.current !== null) setPosition(group.current.position)
+  }, [position])
 
   return (
-    <group  {...props} dispose={null}>
+    <group {...props} dispose={null}>
       <mesh
         ref={group}
         castShadow
@@ -38,8 +35,10 @@ export default function Model(props) {
         position={[144.373352, 0, -55.8524]}
         rotation={[Math.PI, -0.69813182, Math.PI]}
         userData={{ name: 'Parkeer garage', body: 'Over dit gebouw...' }}
-        // onClick={() => props.playFocusAnimations(position.x, position.y, position.z, 20,20,20)} 
-        onPointerOver={() => setActive(true)} 
+        onClick={() =>
+          props.playFocusAnimations(position.x, position.y, position.z)
+        }
+        onPointerOver={() => setActive(true)}
         onPointerOut={() => setActive(false)}
       />
     </group>

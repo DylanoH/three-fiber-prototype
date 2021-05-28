@@ -11,6 +11,7 @@ import {
 import Box from './Box'
 import { OrbitControls } from '@react-three/drei/core/OrbitControls'
 import Stats from 'stats.js'
+import { HDRCubeTextureLoader } from 'three/examples/jsm/loaders/HDRCubeTextureLoader'
 
 // import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import Loader from './Loader'
@@ -46,9 +47,7 @@ const App = () => {
     stats.begin()
 
     // monitored code goes here
-
     stats.end()
-
     requestAnimationFrame(animate)
   }
   requestAnimationFrame(animate)
@@ -84,7 +83,7 @@ const App = () => {
       )
     )
     gsap.to(myCamera.current.position, {
-      duration: 4,
+      duration: 2,
       x: 20,
       y: 20,
       z: 20,
@@ -94,7 +93,7 @@ const App = () => {
       }
     })
     gsap.to(myControls.current.target, {
-      duration: 4,
+      duration: 2,
       x: x,
       y: y + 30,
       z: z,
@@ -110,19 +109,21 @@ const App = () => {
   const playBackAnimations = () => {
     // back anims
     gsap.to(myCamera.current.position, {
-      duration: 0.5,
+      duration: 2,
       x: cameraPos.x,
       y: cameraPos.y,
       z: cameraPos.z,
+      ease: 'expo',
       onUpdate: () => {
         myCamera.current.updateProjectionMatrix()
       }
     })
     gsap.to(myControls.current.target, {
-      duration: 0.5,
+      duration: 2,
       x: 0,
       y: 0,
       z: 0,
+      ease: 'expo',
       onUpdate: function() {
         myControls.current.update()
       }
@@ -143,6 +144,29 @@ const App = () => {
   //         z: -gridSize / 2 + z
   //       })
   //     }
+
+  function Environment({ background = false }) {
+    const { gl, scene } = useThree()
+    const [cubeMap] = useLoader(
+      HDRCubeTextureLoader,
+      [['px.hdr', 'nx.hdr', 'py.hdr', 'ny.hdr', 'pz.hdr', 'nz.hdr']],
+      loader => {
+        loader.setDataType(THREE.UnsignedByteType)
+        loader.setPath('/pisaHDR/')
+      }
+    )
+    useEffect(() => {
+      const gen = new THREE.PMREMGenerator(gl)
+      gen.compileEquirectangularShader()
+      const hdrCubeRenderTarget = gen.fromCubemap(cubeMap)
+      cubeMap.dispose()
+      gen.dispose()
+      if (background) scene.background = hdrCubeRenderTarget.texture
+      scene.environment = hdrCubeRenderTarget.texture
+      return () => (scene.environment = scene.background = null)
+    }, [cubeMap])
+    return null
+  }
 
   return (
     <>
@@ -169,6 +193,7 @@ const App = () => {
         />
         <pointLight position={[10, 10, 10]} />
         <Suspense fallback={<Loader />}>
+          <Environment background />
           <HaasjeOver playFocusAnimations={playFocusAnimations} />
           <Ground />
           <Dylano
