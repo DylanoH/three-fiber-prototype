@@ -9,35 +9,33 @@ import { Canvas, useFrame } from '@react-three/fiber'
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
 
 export default function Model(props) {
-
-  const vec = new THREE.Vector3()
   const [active, setActive] = useState(false)
-  const [zoom, set] = useState(false)
   useEffect(() => {
-    document.body.style.cursor = active ? 'pointer' : 'auto'},
-    [active])
-
-
-  // useFrame((state) => {
-  //   const step = 0.1
-  //   state.camera.fov = THREE.MathUtils.lerp(state.camera.fov, zoom ? 10 : 42, step)
-  //   state.camera.position.lerp(vec.set(zoom ? 25 : 40, zoom ? 1 : 15, zoom ? 0 : 60), step)
-  //   state.camera.lookAt(105.1739, 0, -183.56001)
-  //   state.camera.updateProjectionMatrix()
-  // })
+    document.body.style.cursor = active ? 'pointer' : 'auto'
+  }, [active])
 
   const group = useRef(null)
   const { nodes, materials } = useGLTF('/assets/compressed-dylano.glb')
+
+  let position
+  if (group.current !== null) position = group.current.position
+
   return (
-    <group ref={group} {...props} dispose={null}>
+    <group {...props} dispose={null}>
       <mesh
+        ref={group}
         castShadow
         receiveShadow
         geometry={nodes.Dylano.geometry}
         material={materials['Material #282']}
+        // position={props.position}
         position={[105.1739, 0, -183.56001]}
         userData={{ name: 'Dylano', body: 'Dylano doos' }}
-        onClick={() => set(!zoom)} onPointerOver={() => setActive(true)} onPointerOut={() => setActive(false)}
+        onClick={() =>
+          props.playFocusAnimations(position.x, position.y, position.z)
+        }
+        onPointerOver={() => setActive(true)}
+        onPointerOut={() => setActive(false)}
       />
     </group>
   )
