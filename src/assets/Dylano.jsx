@@ -29,7 +29,7 @@ export default function Model(props) {
 
   let position
   if (group.current !== null) position = group.current.position
-
+  console.log('group', group)
   return (
     <group {...props} dispose={null}>
       <mesh
@@ -40,7 +40,11 @@ export default function Model(props) {
         material={materials['Material #282']}
         // position={props.position}
         position={[105.1739, 0, -183.56001]}
-        userData={{ name: 'Doos', body: post?.acf?.description }}
+        userData={{
+          name: 'Doos',
+          body: post?.acf?.description,
+          img: post?.acf?.picture.sizes.large
+        }}
         onClick={() =>
           props.playFocusAnimations(position.x, position.y, position.z)
         }

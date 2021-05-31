@@ -1,10 +1,8 @@
-import * as THREE from 'three'
 import React, { useRef, useState, Suspense, useEffect, useContext } from 'react'
 import { Canvas, useLoader, useThree } from '@react-three/fiber'
 import Box from './Box'
 import { OrbitControls } from '@react-three/drei/core/OrbitControls'
 import Stats from 'stats.js'
-import { HDRCubeTextureLoader } from 'three/examples/jsm/loaders/HDRCubeTextureLoader'
 import Loader from './Loader'
 import HaasjeOver from './assets/HaasjeOver'
 import { Vector3 } from 'three'
@@ -14,6 +12,7 @@ import Block from './assets/Block'
 import Auto from './assets/Auto'
 import Building from './assets/Building'
 import Marker from './assets/Marker'
+import Environment from './assets/Environment'
 import ApiContextProvider from './utils/ApiContextProvider'
 
 import { PerspectiveCamera } from '@react-three/drei/core/PerspectiveCamera'
@@ -21,8 +20,15 @@ import { PerspectiveCamera } from '@react-three/drei/core/PerspectiveCamera'
 import { gsap } from 'gsap'
 import { ApiContext } from './utils/ApiContextProvider'
 
+import Sidebar from 'components/sidebar/Sidebar'
+import ResetButton from 'components/reset-button/ResetButton'
+
 const App = () => {
   const { posts } = useContext(ApiContext)
+
+  useEffect(() => {
+    console.log('posts', posts)
+  }, [posts])
 
   const myCamera = useRef(null)
   const myControls = useRef(null)
@@ -32,8 +38,11 @@ const App = () => {
   stats.showPanel(1) // 0: fps, 1: ms, 2: mb, 3+: custom
   // document.body.appendChild(stats.dom)
 
-  const [orbit, setOrbit] = useState(false)
+  const [focus, setFocus] = useState(false)
   const [cameraPos, setCameraPos] = useState(new Vector3(0, 0, 0))
+  const [title, setTitle] = useState('')
+  const [body, setBody] = useState()
+  const [img, setImg] = useState()
 
   stats.begin()
   stats.end()
@@ -49,25 +58,13 @@ const App = () => {
 
   const displayData = object => {
     const { userData } = object
-    const container = myContainer.current
-    const sidebar = mySideBar.current
 
-    if (userData === {}) {
-      container.style.visibility = 'hidden'
-      container.style.opacity = '0'
-      sidebar.style.left = '-390px'
-    } else {
-      container.style.visibility = 'visible'
-      container.style.opacity = '1'
-      sidebar.style.left = '0'
-      container.innerHTML = userData.name
-      sidebar.innerHTML = userData.body
-    }
+    console.log('data', userData)
+
+    setTitle(userData.name)
+    setBody(userData.body)
+    setImg(userData.img)
   }
-
-  useEffect(() => {
-    console.log(cameraPos)
-  }, [cameraPos])
 
   const playFocusAnimations = (x, y, z) => {
     setCameraPos(
@@ -98,7 +95,7 @@ const App = () => {
       }
     })
 
-    setOrbit(true)
+    setFocus(true)
   }
 
   const playBackAnimations = () => {
@@ -124,30 +121,7 @@ const App = () => {
       }
     })
 
-    setOrbit(false)
-  }
-
-  function Environment({ background = false }) {
-    const { gl, scene } = useThree()
-    const [cubeMap] = useLoader(
-      HDRCubeTextureLoader,
-      [['px.hdr', 'nx.hdr', 'py.hdr', 'ny.hdr', 'pz.hdr', 'nz.hdr']],
-      loader => {
-        loader.setDataType(THREE.UnsignedByteType)
-        loader.setPath('/pisaHDR/')
-      }
-    )
-    useEffect(() => {
-      const gen = new THREE.PMREMGenerator(gl)
-      gen.compileEquirectangularShader()
-      const hdrCubeRenderTarget = gen.fromCubemap(cubeMap)
-      cubeMap.dispose()
-      gen.dispose()
-      if (background) scene.background = hdrCubeRenderTarget.texture
-      scene.environment = hdrCubeRenderTarget.texture
-      return () => (scene.environment = scene.background = null)
-    }, [cubeMap])
-    return null
+    setFocus(false)
   }
 
   return (
@@ -161,9 +135,9 @@ const App = () => {
         <OrbitControls
           ref={myControls}
           camera={myCamera.current}
-          autoRotate={!orbit}
+          autoRotate={!focus}
           autoRotateSpeed={0.5}
-          enabled={!orbit}
+          enabled={!focus}
         />
         <ambientLight />
         <hemisphereLight color={0xffffff} intensity={0.4} />
@@ -196,21 +170,8 @@ const App = () => {
 
         <Box />
       </Canvas>
-      <div className='sidebar' ref={mySideBar}></div>
-      <div className='container' ref={myContainer}>
-        <span className='title'>Test threejs</span>
-      </div>
-      <div
-        style={{
-          width: 200,
-          height: 80,
-          backgroundColor: 'green',
-          position: 'fixed',
-          bottom: 20,
-          left: 20
-        }}
-        onClick={() => playBackAnimations()}
-      ></div>
+      <Sidebar focus={focus} title={title} body={body} img={img} />
+      <ResetButton playBackAnimations={playBackAnimations} />
     </>
   )
 }

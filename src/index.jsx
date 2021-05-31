@@ -6,6 +6,10 @@ import ApiContextProvider from './utils/ApiContextProvider'
 
 const GlobalStyle = createGlobalStyle`
 
+*, *::after, *::before {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -47,19 +51,6 @@ canvas {
 
 }
 
-.sidebar {
-  opacity: 1;
-  transition: 1s ease-in-out;
-  position: fixed;
-  left: -390px;
-  padding: 20px;
-  width: 350px;
-  top: 0;
-  z-index: 5;
-  height: 100vh;
-  background-color: grey;
-
-}
 `
 
 ReactDOM.render(
