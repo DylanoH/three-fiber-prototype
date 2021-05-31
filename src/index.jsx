@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { createGlobalStyle } from 'styled-components'
 import App from './App'
+import ApiContextProvider from './utils/ApiContextProvider'
 
 const GlobalStyle = createGlobalStyle`
 
@@ -63,8 +64,10 @@ canvas {
 
 ReactDOM.render(
   <>
-    <GlobalStyle />
-    <App />
+    <ApiContextProvider>
+      <GlobalStyle />
+      <App />
+    </ApiContextProvider>
   </>,
 
   document.getElementById('root')
