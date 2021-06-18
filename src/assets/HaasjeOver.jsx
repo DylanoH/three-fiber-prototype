@@ -14,6 +14,7 @@ export default function Model(props) {
 
   const [post, setPost] = useState()
 
+  console.log(post)
   useEffect(() => {
     document.body.style.cursor = active ? 'pointer' : 'auto'
   }, [active])
@@ -35,7 +36,10 @@ export default function Model(props) {
         // position={props.position}
         position={[-114.292229, 0, -72.47771]}
         rotation={[0, -0.4974189, 0]}
-        userData={{ name: 'Haasjeover', body: post?.acf?.description }}
+        userData={{
+          name: 'Haasjeover',
+          components: post?.acf.components
+        }}
         onClick={() =>
           props.playFocusAnimations(position.x, position.y, position.z)
         }

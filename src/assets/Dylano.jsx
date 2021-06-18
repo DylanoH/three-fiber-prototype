@@ -41,7 +41,7 @@ export default function Model(props) {
         // position={props.position}
         position={[105.1739, 0, -183.56001]}
         userData={{
-          name: 'Doos',
+          name: post?.acf?.description,
           body: post?.acf?.description,
           img: post?.acf?.picture.sizes.large
         }}
@@ -56,3 +56,18 @@ export default function Model(props) {
 }
 
 useGLTF.preload('/assets/compressed-dylano.glb')
+
+// functie return uniek cijfer tussen 1 en aantal posts dat nog niet geweest is
+
+// functie ()
+
+// aantal totale vragen
+// Welke vraag er al geweest is
+
+// array met huidige vraag
+// zit dit getal al in de array? niet erin duwen
+// wel? erin duwen
+
+// Als die er niet in zit? return dat cijfer
+
+// renderquestion -> rendercounter functie

@@ -5,7 +5,7 @@ import { OrbitControls } from '@react-three/drei/core/OrbitControls'
 import Stats from 'stats.js'
 import Loader from './Loader'
 import HaasjeOver from './assets/HaasjeOver'
-import { Vector3 } from 'three'
+import { BoxHelper, Vector3 } from 'three'
 import Ground from './assets/Ground'
 import Dylano from './assets/Dylano'
 import Block from './assets/Block'
@@ -14,13 +14,14 @@ import Building from './assets/Building'
 import Marker from './assets/Marker'
 import Environment from './assets/Environment'
 import ApiContextProvider from './utils/ApiContextProvider'
-
+import { EffectComposer, DepthOfField } from '@react-three/postprocessing'
+import * as dat from 'dat.gui'
 import { PerspectiveCamera } from '@react-three/drei/core/PerspectiveCamera'
 
 import { gsap } from 'gsap'
 import { ApiContext } from './utils/ApiContextProvider'
 
-import Sidebar from 'components/sidebar/Sidebar'
+import Info from 'components/Info/Info'
 import ResetButton from 'components/reset-button/ResetButton'
 
 const App = () => {
@@ -43,6 +44,9 @@ const App = () => {
   const [title, setTitle] = useState('')
   const [body, setBody] = useState()
   const [img, setImg] = useState()
+  const [infoComponents, setInfoComponents] = useState()
+
+  const gui = new dat.GUI()
 
   stats.begin()
   stats.end()
@@ -57,13 +61,12 @@ const App = () => {
   requestAnimationFrame(animate)
 
   const displayData = object => {
+    console.log('object', object)
     const { userData } = object
 
     console.log('data', userData)
-
     setTitle(userData.name)
-    setBody(userData.body)
-    setImg(userData.img)
+    setInfoComponents(userData.components)
   }
 
   const playFocusAnimations = (x, y, z) => {
@@ -124,6 +127,14 @@ const App = () => {
     setFocus(false)
   }
 
+  const bokeh = {
+    focalLength: 0
+  }
+
+  // gui.add(bokeh, 'bokeh', 0, 1, 0.001)
+
+  // const test = useRef()
+
   return (
     <>
       <Canvas>
@@ -131,6 +142,7 @@ const App = () => {
           ref={myCamera}
           makeDefault
           position={[250, 200, 250]}
+          zoom={1.5}
         />
         <OrbitControls
           ref={myControls}
@@ -139,6 +151,14 @@ const App = () => {
           autoRotateSpeed={0.5}
           enabled={!focus}
         />
+        {/* <EffectComposer>
+          <DepthOfField
+
+            focusDistance={0} // where to focus
+            focalLength={bokeh.focalLength} // focal length
+            bokehScale={2} // bokeh size
+          />
+        </EffectComposer> */}
         <ambientLight />
         <hemisphereLight color={0xffffff} intensity={0.4} />
         <directionalLight
@@ -151,12 +171,15 @@ const App = () => {
         <Suspense fallback={<Loader />}>
           <ApiContextProvider>
             <Environment background />
-            <HaasjeOver playFocusAnimations={playFocusAnimations} />
+            <HaasjeOver
+              playFocusAnimations={playFocusAnimations}
+              onClick={e => displayData(e.object.parent)}
+            />
             <Ground />
-            <Dylano
+            {/* <Dylano
               playFocusAnimations={playFocusAnimations}
               onClick={e => displayData(e.object)}
-            />
+            /> */}
 
             <Building
               onClick={e => displayData(e.object)}
@@ -170,7 +193,8 @@ const App = () => {
 
         <Box />
       </Canvas>
-      <Sidebar focus={focus} title={title} body={body} img={img} />
+      {/* <Info focus={focus} title={title} body={body} img={img} /> */}
+      <Info components={infoComponents} title={title} />
       <ResetButton playBackAnimations={playBackAnimations} />
     </>
   )
