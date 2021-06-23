@@ -1,11 +1,11 @@
 import React, { useRef, useState, Suspense, useEffect, useContext } from 'react'
 import { Canvas, useLoader, useThree } from '@react-three/fiber'
-import Box from './Box'
 import { OrbitControls } from '@react-three/drei/core/OrbitControls'
+import { Sky } from '@react-three/drei/core/Sky'
 import Stats from 'stats.js'
 import Loader from './Loader'
 import HaasjeOver from './assets/HaasjeOver'
-import { BoxHelper, Vector3 } from 'three'
+import { Vector3 } from 'three'
 import Ground from './assets/Ground'
 import Dylano from './assets/Dylano'
 import Block from './assets/Block'
@@ -19,32 +19,47 @@ import * as dat from 'dat.gui'
 import { PerspectiveCamera } from '@react-three/drei/core/PerspectiveCamera'
 
 import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
 import { ApiContext } from './utils/ApiContextProvider'
 
 import Info from 'components/Info/Info'
-import ResetButton from 'components/reset-button/ResetButton'
 
 const App = () => {
-  const { posts } = useContext(ApiContext)
-
-  useEffect(() => {
-    console.log('posts', posts)
-  }, [posts])
-
-  const myCamera = useRef(null)
-  const myControls = useRef(null)
-  const mySideBar = useRef(null)
-  const myContainer = useRef(null)
-  const stats = new Stats()
-  stats.showPanel(1) // 0: fps, 1: ms, 2: mb, 3+: custom
-  // document.body.appendChild(stats.dom)
-
   const [focus, setFocus] = useState(false)
   const [cameraPos, setCameraPos] = useState(new Vector3(0, 0, 0))
   const [title, setTitle] = useState('')
-  const [body, setBody] = useState()
-  const [img, setImg] = useState()
   const [infoComponents, setInfoComponents] = useState()
+
+  let passed = false
+
+  // const { posts } = useContext(ApiContext)
+
+
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll, { passive: true })
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll, { passive: true })
+    }
+  }, [cameraPos])
+
+  const handleScroll = () => {
+    const position = window.pageYOffset
+    if (position > 200) {
+      passed = true
+    }
+    if (passed && position < 50) {
+      playBackAnimations()
+    }
+  }
+
+  const myCamera = useRef(null)
+  const myControls = useRef(null)
+  const stats = new Stats()
+  stats.showPanel(1) // 0: fps, 1: ms, 2: mb, 3+: custom
+  // document.body.appendChild(stats.dom)
 
   const gui = new dat.GUI()
 
@@ -61,10 +76,8 @@ const App = () => {
   requestAnimationFrame(animate)
 
   const displayData = object => {
-    console.log('object', object)
     const { userData } = object
 
-    console.log('data', userData)
     setTitle(userData.name)
     setInfoComponents(userData.components)
   }
@@ -93,11 +106,10 @@ const App = () => {
       y: y + 30,
       z: z,
       ease: 'expo',
-      onUpdate: function() {
+      onUpdate: () => {
         myControls.current.update()
       }
     })
-
     setFocus(true)
   }
 
@@ -119,25 +131,19 @@ const App = () => {
       y: 0,
       z: 0,
       ease: 'expo',
-      onUpdate: function() {
+      onUpdate: () => {
         myControls.current.update()
+      },
+      onComplete: () => {
+        setFocus(false)
       }
     })
-
-    setFocus(false)
   }
-
-  const bokeh = {
-    focalLength: 0
-  }
-
-  // gui.add(bokeh, 'bokeh', 0, 1, 0.001)
-
-  // const test = useRef()
 
   return (
     <>
       <Canvas>
+        <fog attach='fog' color='white' near={600} far={800} />
         <PerspectiveCamera
           ref={myCamera}
           makeDefault
@@ -150,14 +156,17 @@ const App = () => {
           autoRotate={!focus}
           autoRotateSpeed={0.5}
           enabled={!focus}
+          enableZoom={false}
         />
         {/* <EffectComposer>
-          <DepthOfField
-
-            focusDistance={0} // where to focus
-            focalLength={bokeh.focalLength} // focal length
-            bokehScale={2} // bokeh size
-          />
+          {focus && (
+            <DepthOfField
+              ref={test}
+              focusDistance={0.1} // where to focus
+              focalLength={0.5} // focal length
+              bokehScale={4} // bokeh size
+            />
+          )}
         </EffectComposer> */}
         <ambientLight />
         <hemisphereLight color={0xffffff} intensity={0.4} />
@@ -170,7 +179,7 @@ const App = () => {
         <pointLight position={[10, 10, 10]} />
         <Suspense fallback={<Loader />}>
           <ApiContextProvider>
-            <Environment background />
+            {/* <Environment background /> */}
             <HaasjeOver
               playFocusAnimations={playFocusAnimations}
               onClick={e => displayData(e.object.parent)}
@@ -191,11 +200,9 @@ const App = () => {
           </ApiContextProvider>
         </Suspense>
 
-        <Box />
       </Canvas>
       {/* <Info focus={focus} title={title} body={body} img={img} /> */}
-      <Info components={infoComponents} title={title} />
-      <ResetButton playBackAnimations={playBackAnimations} />
+      <Info components={infoComponents} title={title} focus={focus} />
     </>
   )
 }
