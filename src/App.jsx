@@ -35,8 +35,6 @@ const App = () => {
 
   // const { posts } = useContext(ApiContext)
 
-
-
   useEffect(() => {
     window.addEventListener('scroll', handleScroll, { passive: true })
 
@@ -179,7 +177,7 @@ const App = () => {
         <pointLight position={[10, 10, 10]} />
         <Suspense fallback={<Loader />}>
           <ApiContextProvider>
-            {/* <Environment background /> */}
+            <Environment background />
             <HaasjeOver
               playFocusAnimations={playFocusAnimations}
               onClick={e => displayData(e.object.parent)}
@@ -199,7 +197,6 @@ const App = () => {
             <Auto />
           </ApiContextProvider>
         </Suspense>
-
       </Canvas>
       {/* <Info focus={focus} title={title} body={body} img={img} /> */}
       <Info components={infoComponents} title={title} focus={focus} />
