@@ -45,7 +45,6 @@ const Nav = styled.nav`
 const Info = ({ components, focus }) => {
   const renderComponent = (component, i) => {
     const { titel, image, text, url } = component
-    console.log('compo', component)
     switch (component.acf_fc_layout) {
       case 'header':
         return <Header title={titel} image={image?.sizes?.medium} text={text} />
