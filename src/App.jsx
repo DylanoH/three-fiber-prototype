@@ -25,6 +25,32 @@ import { ApiContext } from './utils/ApiContextProvider'
 
 import Info from 'components/Info/Info'
 
+import styled from 'styled-components'
+import ResetButton from 'components/reset-button/ResetButton'
+
+const Button = styled.div`
+  width: 100px;
+  height: 40px;
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background-color: white;
+  display: grid;
+  border-radius: 5px;
+  place-items: center;
+`
+const Button2 = styled.div`
+  width: 100px;
+  height: 40px;
+  position: fixed;
+  top: 70px;
+  left: 20px;
+  background-color: white;
+  display: grid;
+  border-radius: 5px;
+  place-items: center;
+`
+
 const App = () => {
   const [focus, setFocus] = useState(false)
   const [cameraPos, setCameraPos] = useState(new Vector3(0, 0, 0))
@@ -200,6 +226,11 @@ const App = () => {
       </Canvas>
       {/* <Info focus={focus} title={title} body={body} img={img} /> */}
       <Info components={infoComponents} title={title} focus={focus} />
+      <ResetButton click={playBackAnimations}>Reset Camera</ResetButton>
+      <Button onClick={() => playFocusAnimations(-114, 0, -72)}>
+        Haasjeover
+      </Button>
+      <Button2 onClick={() => playFocusAnimations(144, 0, -55)}>Garage</Button2>
     </>
   )
 }
